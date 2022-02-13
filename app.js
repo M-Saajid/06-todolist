@@ -1,5 +1,3 @@
-//jshint esversion:6
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -15,6 +13,7 @@ app.use(express.static("public"));
 mongoose.connect(
   "mongodb+srv://admin-sk:0759342494@cluster0.jqida.mongodb.net/to-do-Listdb"
 );
+
 const itemSchema = {
   name: String
 };
@@ -22,6 +21,7 @@ const listSchema = {
   name: String,
   items: [itemSchema]
 };
+
 const List = mongoose.model("List", listSchema);
 const Item = mongoose.model("Item", itemSchema);
 
@@ -37,12 +37,13 @@ const item3 = new Item({
 const item4 = new Item({
   name: "Sdd your list  "
 });
+
 const defaultItems = [item1, item2, item3, item4];
 
-app.get("/", function(req, res) {
-  Item.find({}, function(err, foundItems) {
+app.get("/", function (req, res) {
+  Item.find({}, function (err, foundItems) {
     if (foundItems.length === 0) {
-      Item.insertMany(defaultItems, e => {
+      Item.insertMany(defaultItems, (e) => {
         if (e) {
           console.log(e);
         } else {
@@ -57,7 +58,7 @@ app.get("/", function(req, res) {
   });
 });
 
-app.post("/", function(req, res) {
+app.post("/", function (req, res) {
   const itemName = req.body.newItem;
   const listName = req.body.list;
   const item = new Item({
@@ -75,11 +76,11 @@ app.post("/", function(req, res) {
   }
 });
 
-app.post("/delete", function(req, res) {
+app.post("/delete", function (req, res) {
   const checkedId = req.body.checkBox;
   const listName = req.body.listName;
   if (listName === "today") {
-    Item.findByIdAndRemove(checkedId, function(e) {
+    Item.findByIdAndRemove(checkedId, function (e) {
       if (!e) {
         console.log("You have deleted the Item");
         res.redirect("/");
@@ -99,10 +100,9 @@ app.post("/delete", function(req, res) {
   }
 });
 
-app.get("/:customListName", function(req, res) {
+app.get("/:customListName", function (req, res) {
   const customListName = req.params.customListName.toUpperCase();
-
-  List.findOne({ name: customListName }, function(err, foundList) {
+  List.findOne({ name: customListName }, function (err, foundList) {
     if (!err) {
       if (!foundList) {
         const list = new List({
@@ -121,11 +121,11 @@ app.get("/:customListName", function(req, res) {
   });
 });
 
-app.get("/about", function(req, res) {
+app.get("/about", function (req, res) {
   res.render("about");
 });
 
-app.listen(3000, function() {
+app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
 
